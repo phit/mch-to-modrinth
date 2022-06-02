@@ -137,7 +137,11 @@ function displayPackVersion(pack, version) {
               let url = file.url
               if (!url && file.curseforge) {
                 url = 'https://media.forgecdn.net/files/' + String(file.curseforge.file).substr(0, 4) + '/' 
-                  + String(file.curseforge.file).substr(4, 3).replace(/^0+/, '') + '/' + encodeURIComponent(file.name)
+                  + String(file.curseforge.file).substr(4, 3).replace(/^0+/, '') + '/' + encodeURIComponent(file.name);
+              }
+
+              if (file.path.includes('ftbauxilium')) {
+                continue;
               }
               modrinth.files.push({
                 'path': file.path + file.name,
