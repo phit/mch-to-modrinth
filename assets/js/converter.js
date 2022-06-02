@@ -105,10 +105,19 @@ function displayPack(pack) {
 }
 
 function displayPackVersion(pack, version) {
+  const headers = new Headers({
+    "Accept": "application/json",
+    "Content-Type": "application/json",
+    "User-Agent": "modpacklauncher/@phit " + window.navigator.userAgent
+  });
+
   fetch('https://api.modpacks.ch/public/modpack/' + pack)
     .then(response => response.json())
     .then(packData => {
-        fetch('https://api.modpacks.ch/public/modpack/' + pack + '/' + version)
+        fetch('https://api.modpacks.ch/public/modpack/' + pack + '/' + version, {
+          method: 'GET',
+          headers: headers
+        })
           .then(response => response.json())
           .then(versionData => {
             let modrinth = {
@@ -136,7 +145,7 @@ function displayPackVersion(pack, version) {
             for (const file of versionData.files) {
               let url = file.url
               if (!url && file.curseforge) {
-                url = 'https://media.forgecdn.net/files/' + String(file.curseforge.file).substr(0, 4) + '/' 
+                url = 'https://media.forgecdn.net/files/' + String(file.curseforge.file).substr(0, 4) + '/'
                   + String(file.curseforge.file).substr(4, 3).replace(/^0+/, '') + '/' + encodeURIComponent(file.name);
               }
 
@@ -161,8 +170,8 @@ function displayPackVersion(pack, version) {
 
             var zip = new JSZip();
             zip.file("modrinth.index.json", JSON.stringify(modrinth, null, "\t"));
-            zip.generateAsync({type:"blob"})
-              .then(function(content) {
+            zip.generateAsync({ type: "blob" })
+              .then(function (content) {
                 saveAs(content, packData.name + '-' + versionData.name + '.mrpack');
               });
           });
