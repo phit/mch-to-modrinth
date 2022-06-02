@@ -14,6 +14,29 @@ fetch('https://api.modpacks.ch/public/modpack/all')
 
 let allPacks = [];
 
+const packList = document.getElementById("pack-list");
+const search = document.getElementById("search");
+const filter = document.getElementById("filter");
+
+search.addEventListener("input", (e) => doSearch(e.target.value));
+filter.addEventListener("change", (e) => displayPacks());
+
+function doSearch(input) {
+  input = input.toLowerCase();
+  for (packEl of packList.children) {
+    if (input == '') {
+      packEl.classList.remove('is-hidden');
+      continue;
+    }
+
+    if (packEl.children[0].textContent.toLowerCase().includes(input)) {
+      packEl.classList.remove('is-hidden');
+    } else {
+      packEl.classList.add('is-hidden');
+    }
+  }
+}
+
 function requestPacks(packs) {
   for (const pack of packs) {
     fetch('https://api.modpacks.ch/public/modpack/' + pack)
@@ -28,20 +51,19 @@ function requestPacks(packs) {
   }
 }
 
-const packList = document.getElementById("pack-list");
-
 function displayPacks() {
+  if (!allPacks) {
+    return;
+  }
+  // Wipe packlist
+  packList.textContent = '';
+
   // Sort packs by installs
   allPacks.sort(function compareFn(a, b) {
-    if (a.installs < b.installs) {
-      return 1;
+    if (filter.value == 'name') {
+      return a.name.replace('FTB ', '').localeCompare(b.name.replace('FTB ', ''))
     }
-    else if (a.installs > b.installs) {
-      return -1;
-    }
-    else {
-      return 0;
-    }
+    return b[filter.value] < a[filter.value] ? -1 : b[filter.value] > a[filter.value] ? 1 : 0;
   });
 
   // Display packs in a list
@@ -58,6 +80,7 @@ function displayPacks() {
 
   // Finally close down the modal
   modal.classList.remove("is-active");
+  doSearch(search.value);
 }
 
 const packDisplay = document.getElementById("pack-display");
