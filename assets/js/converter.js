@@ -134,6 +134,10 @@ function displayPackVersion(pack, version) {
             }
 
             for (const file of versionData.files) {
+              let url = file.url
+              if (!url && file.curseforge) {
+                url = 'https://media.forgecdn.net/files/' + String(file.curseforge.file).substr(0, 4) + '/' + String(file.curseforge.file).substr(4, 3) + '/' + encodeURI(file.name)
+              }
               modrinth.files.push({
                 'path': file.path + file.name,
                 'hashes': {
@@ -144,7 +148,7 @@ function displayPackVersion(pack, version) {
                   'server': file.clientonly ? 'unsupported' : 'required',
                 },
                 'downloads': [
-                  file.url,
+                  url,
                 ],
                 'fileSize': file.size,
               });
