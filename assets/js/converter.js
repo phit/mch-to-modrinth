@@ -3,9 +3,10 @@ const modal = document.getElementById("loading-modal");
 modal.classList.add("is-active");
 
 const progress = document.getElementById("loading-progress");
+const apiBase = 'https://api.feed-the-beast.com/v1/modpacks';
 
-// Fetch all ModpacksCH packs, so we can list them
-fetch('https://api.modpacks.ch/public/modpack/all')
+// Fetch all FTB packs, so we can list them
+fetch(apiBase + '/public/modpack/all')
   .then(response => response.json())
   .then(data => {
     progress.setAttribute("max", data.packs.length);
@@ -39,7 +40,7 @@ function doSearch(input) {
 
 function requestPacks(packs) {
   for (const pack of packs) {
-    fetch('https://api.modpacks.ch/public/modpack/' + pack)
+    fetch(apiBase + '/public/modpack/' + pack)
       .then(response => response.json())
       .then(data => {
         progress.value = progress.value + 1
@@ -94,7 +95,7 @@ const versionList = document.getElementById("version-list");
 function displayPack(pack) {
   packDisplay.classList.remove("is-hidden");
 
-  fetch('https://api.modpacks.ch/public/modpack/' + pack)
+  fetch(apiBase + '/public/modpack/' + pack)
     .then(response => response.json())
     .then(data => {
       // Reset
@@ -134,10 +135,10 @@ function displayPackVersion(pack, version) {
     "User-Agent": "modpacklauncher/@phit " + window.navigator.userAgent
   });
 
-  fetch('https://api.modpacks.ch/public/modpack/' + pack)
+  fetch(apiBase + '/public/modpack/' + pack)
     .then(response => response.json())
     .then(packData => {
-        fetch('https://api.modpacks.ch/public/modpack/' + pack + '/' + version, {
+        fetch(apiBase + '/public/modpack/' + pack + '/' + version, {
           method: 'GET',
           headers: headers
         })
