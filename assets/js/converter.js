@@ -128,6 +128,14 @@ function displayPack(pack) {
     });
 }
 
+function cleanPath(path) {
+  let cleanPath = path.substr(0, 2) == './' ? path.substr(2) : path;
+  if (cleanPath != '' && cleanPath.substr(-1) != '/') {
+    cleanPath += '/';
+  }
+  return cleanPath;
+}
+
 function displayPackVersion(pack, version) {
   const headers = new Headers({
     "Accept": "application/json",
@@ -177,7 +185,7 @@ function displayPackVersion(pack, version) {
                 continue;
               }
               modrinth.files.push({
-                'path': file.path + file.name,
+                'path': cleanPath(file.path) + file.name,
                 'hashes': {
                   'sha1': file.sha1,
                 },
